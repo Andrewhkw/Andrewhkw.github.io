@@ -9,10 +9,53 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
+    <h1>Code Snippet</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 1!</p>
+      <img src="Code Snippet.jpg" />
+      <p>This is the code snippet used to make my LED board blink.
+        The idea was to have a loop have the LED light up and delay until
+        the next light is commanded to turn on. This is how the blinking
+        pattern was created.
+      </p>
+    </div>
+    <h1>Schematic</h1>
+    <div class="header">
+      <img src="Display.jpg" />
+      <p>This is the schematic for the wiring done on the circuit board.
+        The placement of the wires and LEDs mimicks the actual placement
+        of my wires and LEDs on my real board. The resistors should represent
+        220 OHMs. 
+      </p>
+    </div>
+    <h1>Video GIF</h1>
+    <div class="header">
+      <img src="IMG_3599.MOV" />
+      <p>This is a video GIF of the LEDs blinking in action. This shows
+        how the arduino code was used to cause a blinking pattern with the
+        three different LEDs. 
+      </p>
+    </div>
+    <h1>Circuit Board</h1>
+    <div class="header">
+      <img src="Circuit.jpg" />
+      <p>I picked the value 220 for the resistor because I used the equation
+         5V - 1.8V = (20*10^-3)R. 5V represents the initial voltage and 1.8 represents
+         the voltage drop. (20*20^-3) represents the 20mA desired current. 
+      </p>
+    </div>
+    <h1>Questions</h1>
+    <div class="header">
+      <img src="Graph.jpg" />
+      <p> 
+        1: The picture to the left shows the graph for question #1.
+        2: Arduino Uno has 14 pins so it could power 14 individual LEDs.
+        This would draw 280 mA of current because 20mA required per LED multiplied
+        by 14 individual LEDs gives us 280mA of current. 
+        3: The technical answer I googled was that the flicker fusion threshold
+        is around 60-90 Hz. Anything above this would appear to be fading in and out.
+        The less technical answer would be around 100ms as that is what I set my
+        Arduino delay time to and it seemed to be fading in and out rather than blinking. 
+      </p>
     </div>
   </body>
 </html>
