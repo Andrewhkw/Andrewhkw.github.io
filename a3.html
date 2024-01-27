@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Andrew Kwon's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>A3: Input and Output</h1>
+    <p>Here is all the documentation for assignment 3!</p>
+    <h1>Schematic</h1>
+    <div class="header">
+      <img src="A3Schema.jpg" />
+      <p>This is the schematic for the A3 assignment. 
+        I picked the value 220 for the resistor because I used the equation 5V - 1.8V = (20*10^-3)R. 5V represents the 
+        initial voltage and 1.8 represents the voltage drop. (20*20^-3) represents the 
+        20mA desired current. I also used this equation for the button's resistor
+        and got the closest resistor value to 220 ohms. I chose the 10k resistor
+        because resistance is variable and either 5k or 10k resistors could be used.</p>
+    </div>
+    <h1>Arduino Board Photo</h1>
+    <div class="header">
+      <img src="A3 Circuit.jpg" />
+      <p>This is Arduino Board setup I used to get my LEDs to fade with a photo resistor. 
+        I purposely set separate input wires for each LED while having a 
+        5V power source connected with an A5 pin controlling current. This also
+        allowed me to be able to code each LED separately.
+      </p>
+    </div>
+    <h1>Video GIF</h1>
+    <div class="header">
+      <img src="A3.mov" />
+      <p>This is a video GIF of the LEDs fading in with an input (photo resistor). 
+        This video shows how the arduino code was used to cause a fading pattern with the
+        two different LEDs based on how much light the photo resistor recieved. As you can see, 
+        the fading began only after covering the photo resistor completely.
+      </p>
+    </div>
+    <h1>Code Snippet</h1>
+    <div class="header">
+      <img src="A3CodeSnippet1.jpg" />
+      <img src="A3CodeSnippet2.jpg" />
+    </div>
+      <p>This is the code snippet used to fade my LEDs using the values set by my photo resistor.
+        The LEDs will recieve power based on the current set by the photo resistor. In this case,
+        the LEDs will recieve more current with more light and less current with less light. 
+      </p>
+    </div>
+    <h1>Questions</h1>
+    <div class="header">
+      <img src="A3Q1.jpg" />
+      <img src="A3Q2.jpg" />
+      <img src="A3Q3.jpg" />
+      <p> 
+       These are the answers for the questions in A3. 
+      </p>
+    </div>
+  </body>
+</html>
