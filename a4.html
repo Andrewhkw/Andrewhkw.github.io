@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Andrew Kwon's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>A4: Libraries</h1>
+    <p>Here is all the documentation for assignment 4!</p>
+    <h1>Schematic</h1>
+    <div class="header">
+      <img src="A4Schematic.jpg" />
+      <p>This is the schematic for the A4 assignment. 
+        I picked the value 5 ohms for my resistor because this is a common
+        configuration as a pull down/pull up resistor. Furthermore, this value
+        was used because we wanted the current to be super slow.</p>
+    </div>
+    <h1>Arduino Board Photo</h1>
+    <div class="header">
+      <img src="A4Circuit.jpg" />
+      <p>This is Arduino Board setup I used to get my capacitive sensors to turn the motor. 
+        I purposely set separate input wires for the capacitive sensors to pin 2 and 4.
+        This is so that one acts as GND while the other is used as the input for the sensor.
+        For the motor, I configured the necessary wires into each and connected the sensor to
+        the movement of the motor via code using two libraries. 
+      </p>
+    </div>
+    <h1>Video GIF</h1>
+    <div class="header">
+      <img src="A4.MOV" />
+      <p>This is a video GIF of the capacitive sensor being used to turn the motor.
+        Everytime the capactitive sensor recieves an input via being touched, it increases
+        the current and creates a connection to ground which then sends a input to move the motor.
+      </p>
+    </div>
+    <h1>Code Snippet</h1>
+    <div class="header">
+      <img src="A4Code.jpg" />
+    </div>
+      <p>This is the code snippet used to make my capacitive sensor work in sync 
+        with the motor. I added lines of code to map the necessary values for the range
+        that I wanted the motor to move at. Furthermore, I added lines such that the motor
+        moves only when the capacitive sensor reacts. 
+      </p>
+    </div>
+    <h1>Questions</h1>
+    <div class="header">
+      <img src="A4Q1.jpg" />
+      <p> 
+       These are the answers for the questions in A4. 
+       2. //Create new variable r 
+       if Random(100) == 50; //This makes the code randomize out of 100 which is 1 percent
+       r results in an error now
+       else r = analogRead(inputPin);
+
+       3. //Create variable r and read the value given
+       r = analogRead(inputPin);
+       //Create variable e to code error
+       e = random(-0.1r, 0.1r); //This generates a value between the range of -10 and 10 percent of the error
+       //Then add the values from variable e to r.
+       r += e;
+      </p>
+    </div>
+  </body>
+</html>
