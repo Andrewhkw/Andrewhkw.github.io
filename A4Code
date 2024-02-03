@@ -1,0 +1,44 @@
+#include <CapacitiveSensor.h>
+#include <Servo.h>
+
+// Define a CapacitiveSensor object named cs_4_2, using pins 4 and 2 with a 1 megohm resistor
+CapacitiveSensor cs_4_2 = CapacitiveSensor(4, 2);
+// Create a Servo object named myServo
+Servo myServo;
+// Define the input pin for the servo control
+int inputPin = 9;
+
+void setup() {
+   // Disable automatic calibration for channel 1
+   cs_4_2.set_CS_AutocaL_Millis(0xFFFFFFFF);
+   // Start serial communication for debugging
+   Serial.begin(9600);
+   // Set pin 9 as an output for controlling the servo
+   pinMode(9, OUTPUT);
+   // Attach the Servo object to pin 9
+   myServo.attach(9);
+}
+
+void loop() {
+    // Record the start time
+    long start = millis();
+    // Measure the capacitance using the capacitive sensor on pin 2
+    long total1 = cs_4_2.capacitiveSensor(30);
+    // Print the time taken for the capacitance measurement (for performance monitoring)
+    Serial.print(millis() - start);
+    Serial.print("\t"); // Tab character for better readability in the serial monitor
+    // Print the capacitance value
+    Serial.println(total1);
+    // Introduce a short delay
+    delay(10);
+    // Map the capacitance value to a servo angle range (0-180)
+    int servo_val = map(total1, 200, 1023, 0, 180);
+    // Set the servo angle based on the mapped value
+    myServo.write(servo_val);
+    // Introduce a delay before resetting the servo position
+    delay(250);
+    // Reset the servo to 0 degrees
+    myServo.write(0);
+    // Introduce another delay before the next iteration to limit data in the serial port
+    delay(250);
+}
