@@ -11,12 +11,37 @@
   <body>
     <h1>Code Snippet</h1>
     <div class="header">
-      <img src="Code Snippet.jpg" />
+      <p>
+        void setup() { <br>
+        &nbsp;&nbsp;&nbsp;//Initializes digital pin LED_BUILTIN as output <br>
+        &nbsp;&nbsp;&nbsp;pinMode(11, OUTPUT); //Sets output to port 11 <br>
+        &nbsp;&nbsp;&nbsp;pinMode(10, OUTPUT); //Sets output to port 10 <br>
+        &nbsp;&nbsp;&nbsp;pinMode(9, OUTPUT); //Sets output to port 9 <br>
+        } <br>
+          
+        void loop() { <br>
+        &nbsp;&nbsp;&nbsp;// loop <br>
+        &nbsp;&nbsp;&nbsp;digitalWrite(11, HIGH); //Sets the voltage level to HIGH and turns on LED <br>
+        &nbsp;&nbsp;&nbsp;delay(500); //Sets delay to 500 milliseconds <br>
+        &nbsp;&nbsp;&nbsp;digitalWrite(9, LOW); //Sets the voltage level to LOW and turns off LED <br>
+        &nbsp;&nbsp;&nbsp;delay(500); //Sets delay to 500 milliseconds <br>
+        &nbsp;&nbsp;&nbsp;digitalWrite(10, HIGH); //Sets the voltage level to HIGH and turns on LED <br>
+        &nbsp;&nbsp;&nbsp;delay(500); //Sets delay to 500 milliseconds <br>
+        &nbsp;&nbsp;&nbsp;digitalWrite(9, LOW); //Sets the voltage level to LOW and turns off LED <br>
+        &nbsp;&nbsp;&nbsp;delay(500); //Sets delay to 500 milliseconds <br>
+        &nbsp;&nbsp;&nbsp;digitalWrite(9, HIGH); //Sets the voltage level to HIGH and turns on LED <br>
+        &nbsp;&nbsp;&nbsp;delay(500); //Sets delay to 500 milliseconds <br>
+        &nbsp;&nbsp;&nbsp;digitalWrite(9, LOW); //Sets the voltage level to LOW and turns off LED <br>
+        &nbsp;&nbsp;&nbsp;delay(500); //Sets delay to 500 milliseconds <br>
+        } 
+      </p>
       <p>This is the code snippet used to make my LED board blink.
         The idea was to have a loop have the LED light up and delay until
         the next light is commanded to turn on. This is how the blinking
         pattern was created.
-      </p>
+      </p> 
+    </div>
+    
     </div>
     <h1>Schematic</h1>
     <div class="header">
@@ -29,7 +54,7 @@
     </div>
     <h1>Video GIF</h1>
     <div class="header">
-      <img src="IMG_3599.MOV" />
+      <img src="A1Vid.gif" />
       <p>This is a video GIF of the LEDs blinking in action. This shows
         how the arduino code was used to cause a blinking pattern with the
         three different LEDs. 
