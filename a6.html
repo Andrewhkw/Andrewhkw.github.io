@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Andrew Kwon's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>A5: High(er) voltage and transistors!</h1>
+    <p>Here is all the documentation for assignment 5!</p>
+    <h1>Schematic</h1>
+    <div class="header">
+      <img src="A5Schematic.jpg" />
+      <p>This is the schematic for the A5 assignment. 
+        I picked the value 1M for my resistor because this is a common
+        configuration as a pull down/pull up resistor. Furthermore, this value
+        was used because we wanted the current to be super slow. For the transistor,
+        we know that the LED strip light operates at 12V and has a relatively
+        small resistance since it's in series thus requiring a high load throughout
+        the entire device. We will assume total resistance is 10 ohms such that the
+        equation V = IR provides us a maximum current flowing through the LEDs
+        at 1.2A. While I believe the strip lights can handle up to 2A of current,
+        exceeding this threshold will cause a burnout thus 1.2A is a safe value for 
+        the current running through the circuit. </p>
+    </div>
+    <h1>Arduino Board Photo</h1>
+    <div class="header">
+      <img src="A5Circuit.jpg" />
+      <p>This is Arduino Board setup I used to get my capacitive sensors to turn on the LED strip. 
+        I purposely set separate input wires for the capacitive sensors to pin 2 and 4.
+        This is so that one acts as GND while the other is used as the input for the sensor.
+        For the LED strip, I put wires for the positive and negative for the 12V high load
+        power source. I connected positive to the led and grounded both the power load and the 
+        transistor. Using code, I then increased power load depending on the capacitive sensor
+        input. 
+      </p>
+    </div>
+    <h1>Video GIF</h1>
+    <div class="header">
+      <img src="A5Gif.gif" />
+      <p>This is a video GIF of the capacitive sensor being used to increase power load to LED strip.
+        Everytime the capactitive sensor recieves an input via being touched, it increases
+        the current which then makes the LED strip brighter.
+      </p>
+    </div>
+    <h1>Code Snippet</h1>
+    <div class="header">
+      <pre>
+        &lt;#include &lt;CapacitiveSensor.h&gt;&gt;
+    
+        // Define a CapacitiveSensor object named cs_4_2, using pins 4 and 2 with a 1 megohm resistor
+        CapacitiveSensor cs_4_2 = CapacitiveSensor(4, 2);
+        // Define the gate pin for the MOSFET control
+        int gatePin = 5;
+    
+        void setup() {
+           // Disable automatic calibration for channel 1
+           cs_4_2.set_CS_AutocaL_Millis(0xFFFFFFFF);
+           // Set the gate pin as an output
+           pinMode(gatePin, OUTPUT);
+        }
+    
+        void loop() {
+           // Read capacitive sensor value with 30 samples
+           long sensorValue = cs_4_2.capacitiveSensor(30);
+           // Map sensor value to a range of 0-255
+           int outputValue = map(sensorValue, 0, 1000, 0, 255);
+           // Write output value to gate pin
+           analogWrite(gatePin, outputValue);
+           // Introduce a delay of 100 milliseconds
+           delay(100);
+        }          
+      </pre>
+    </div>
+    
+    <h1>Questions</h1>
+<div class="header">
+  <div>
+    <img src="A5Q1New.jpg" style="width: 125%;" />
+  </div>
+  <div>
+    <img src="A5Ques2.jpg" style="width: 125%;" />
+  </div>
+  <div>
+    <img src="A5Q3.jpg" style="width: 125%;" />
+  </div>
+  <pre>
+    // Motor A connections
+    int enA = 9;
+    int in1 = 8;
+    int in2 = 7;
+    // Motor B connections
+    int enB = 3;
+    int in3 = 5;
+    int in4 = 4;
+
+    void setup() {
+        // Set all the motor control pins to outputs
+        pinMode(enA, OUTPUT);
+        pinMode(enB, OUTPUT);
+        pinMode(in1, OUTPUT);
+        pinMode(in2, OUTPUT);
+        pinMode(in3, OUTPUT);
+        pinMode(in4, OUTPUT);
+
+        // Turn off motors - Initial state
+        digitalWrite(in1, LOW);
+        digitalWrite(in2, LOW);
+        digitalWrite(in3, LOW);
+        digitalWrite(in4, LOW);
+    }
+
+    void loop() {
+        directionControl();
+        delay(1000);
+        speedControl();
+        delay(1000);
+    }
+
+    // This function lets you control spinning direction of motors
+    void directionControl() {
+        // Set motors to maximum speed
+        // For PWM maximum possible values are 0 to 255
+        analogWrite(enA, 255);
+        analogWrite(enB, 255);
+
+        // Both motors move forward
+        digitalWrite(in1, HIGH);
+        digitalWrite(in2, LOW);
+        digitalWrite(in3, HIGH);
+        digitalWrite(in4, LOW);
+        delay(2000);
+        
+        // Both motors move backward
+        digitalWrite(in1, LOW);
+        digitalWrite(in2, HIGH);
+        digitalWrite(in3, LOW);
+        digitalWrite(in4, HIGH);
+        delay(2000);
+        
+        // One motor moves forward, the other moves backward
+        digitalWrite(in1, HIGH);
+        digitalWrite(in2, LOW);
+        digitalWrite(in3, LOW);
+        digitalWrite(in4, HIGH);
+        delay(2000);
+
+        // First motor moves backward, second motor moves forward
+        digitalWrite(in1, LOW);
+        digitalWrite(in2, HIGH);
+        digitalWrite(in3, HIGH);
+        digitalWrite(in4, LOW);
+        delay(2000);
+
+        // Turn off motors
+        digitalWrite(in1, LOW);
+        digitalWrite(in2, LOW);
+        digitalWrite(in3, LOW);
+        digitalWrite(in4, LOW);
+    }
+  </pre>
+</div>
