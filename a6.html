@@ -9,157 +9,193 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>A5: High(er) voltage and transistors!</h1>
-    <p>Here is all the documentation for assignment 5!</p>
+    <h1>A6: Talking to the Web!</h1>
+    <p>Here is all the documentation for assignment 6!</p>
     <h1>Schematic</h1>
     <div class="header">
-      <img src="A5Schematic.jpg" />
-      <p>This is the schematic for the A5 assignment. 
-        I picked the value 1M for my resistor because this is a common
-        configuration as a pull down/pull up resistor. Furthermore, this value
-        was used because we wanted the current to be super slow. For the transistor,
-        we know that the LED strip light operates at 12V and has a relatively
-        small resistance since it's in series thus requiring a high load throughout
-        the entire device. We will assume total resistance is 10 ohms such that the
-        equation V = IR provides us a maximum current flowing through the LEDs
-        at 1.2A. While I believe the strip lights can handle up to 2A of current,
-        exceeding this threshold will cause a burnout thus 1.2A is a safe value for 
-        the current running through the circuit. </p>
+      <img src="A6Schematic.jpg" />
+      <p>This is the schematic for the A6 assignment. 
+        I picked the value 330 for the resistor because I used the equation 5V - 1.8V = (20*10^-3)R. 5V represents the 
+        initial voltage and 1.8 represents the voltage drop. (20*20^-3) represents the 
+        20mA desired current. I also used this equation for the button's resistor
+        and got the closest resistor value to 330 ohms. </p>
     </div>
     <h1>Arduino Board Photo</h1>
     <div class="header">
-      <img src="A5Circuit.jpg" />
-      <p>This is Arduino Board setup I used to get my capacitive sensors to turn on the LED strip. 
-        I purposely set separate input wires for the capacitive sensors to pin 2 and 4.
-        This is so that one acts as GND while the other is used as the input for the sensor.
-        For the LED strip, I put wires for the positive and negative for the 12V high load
-        power source. I connected positive to the led and grounded both the power load and the 
-        transistor. Using code, I then increased power load depending on the capacitive sensor
-        input. 
+      <img src="A6Circuit.jpg" />
+      <p>This is Arduino Board setup I used to get my analog stick to turn on the LED strip. 
+        The Analog Stick will register an input from the x or y direction and then based
+        on those changes the LED will blink. Furthermore, the code allows us to create a live server 
+        which communicates via webserial and any input given by the library creates an output to the LED
+        and vice versa any change within the arduino will create a change on the web server. 
       </p>
     </div>
     <h1>Video GIF</h1>
     <div class="header">
-      <img src="A5Gif.gif" />
-      <p>This is a video GIF of the capacitive sensor being used to increase power load to LED strip.
-        Everytime the capactitive sensor recieves an input via being touched, it increases
-        the current which then makes the LED strip brighter.
+      <img src="a6Gif.gif" />
+      <p>This is a video GIF of the LED turning on and off based off of what the analog 
+        input would do when it recieves a serial connection. Essentially, everytime the arduino
+        recieves a 1 it will turn on and when it recieves a 0 (stationary) it will stay off. 
       </p>
     </div>
     <h1>Code Snippet</h1>
-    <div class="header">
-      <pre>
-        &lt;#include &lt;CapacitiveSensor.h&gt;&gt;
-    
-        // Define a CapacitiveSensor object named cs_4_2, using pins 4 and 2 with a 1 megohm resistor
-        CapacitiveSensor cs_4_2 = CapacitiveSensor(4, 2);
-        // Define the gate pin for the MOSFET control
-        int gatePin = 5;
-    
-        void setup() {
-           // Disable automatic calibration for channel 1
-           cs_4_2.set_CS_AutocaL_Millis(0xFFFFFFFF);
-           // Set the gate pin as an output
-           pinMode(gatePin, OUTPUT);
-        }
-    
-        void loop() {
-           // Read capacitive sensor value with 30 samples
-           long sensorValue = cs_4_2.capacitiveSensor(30);
-           // Map sensor value to a range of 0-255
-           int outputValue = map(sensorValue, 0, 1000, 0, 255);
-           // Write output value to gate pin
-           analogWrite(gatePin, outputValue);
-           // Introduce a delay of 100 milliseconds
-           delay(100);
-        }          
-      </pre>
-    </div>
-    
-    <h1>Questions</h1>
 <div class="header">
-  <div>
-    <img src="A5Q1New.jpg" style="width: 125%;" />
-  </div>
-  <div>
-    <img src="A5Ques2.jpg" style="width: 125%;" />
-  </div>
-  <div>
-    <img src="A5Q3.jpg" style="width: 125%;" />
-  </div>
   <pre>
-    // Motor A connections
-    int enA = 9;
-    int in1 = 8;
-    int in2 = 7;
-    // Motor B connections
-    int enB = 3;
-    int in3 = 5;
-    int in4 = 4;
+    &lt;
+    //THIS IS THE CODE FOR INDEX.JS
 
-    void setup() {
-        // Set all the motor control pins to outputs
-        pinMode(enA, OUTPUT);
-        pinMode(enB, OUTPUT);
-        pinMode(in1, OUTPUT);
-        pinMode(in2, OUTPUT);
-        pinMode(in3, OUTPUT);
-        pinMode(in4, OUTPUT);
+    const BAUD_RATE = 9600; // This should match the baud rate in your Arduino sketch
+    const portName = "/dev/cu.usbmodem1301";
 
-        // Turn off motors - Initial state
-        digitalWrite(in1, LOW);
-        digitalWrite(in2, LOW);
-        digitalWrite(in3, LOW);
-        digitalWrite(in4, LOW);
+    let serial;
+    let connectBtn;
+    let ledBtn;
+    let text_x;
+    let text_y;
+    let x;
+    let y;
+
+    function ReadInput() {
+      let str = port.readUntil("\n"); // Read from the port until the newline
+      if (str.length > 0 && str[0]=="X"){
+        // "X=...."
+        x = Number(str.substring(2));
+        text_x.innerHTML = String(x);
+      } else if (str.length > 0 && str[0]=="Y"){
+        // "Y=...."
+        y = Number(str.substring(2)); 
+        text_y.innerHTML = String(y);
+      }
     }
 
-    void loop() {
-        directionControl();
-        delay(1000);
-        speedControl();
-        delay(1000);
+    function checkPort() {
+      // this will check if connection is on and update the button
+      if (!serial.opened()) {
+        // If the port is not open, change button text
+        connectBtn.innerHTML = "Connect";
+        return false;
+      } else {
+        // Otherwise we are connected
+        connectBtn.innerHTML = "Disconnect";
+        return true;
+      }
     }
 
-    // This function lets you control spinning direction of motors
-    void directionControl() {
-        // Set motors to maximum speed
-        // For PWM maximum possible values are 0 to 255
-        analogWrite(enA, 255);
-        analogWrite(enB, 255);
+    function onConnect() {
+      // When the connect button is clicked
+      if (!serial.opened()) {
+        // If the port is not opened, we open it
+        let options = {
+          baudRate: BAUD_RATE
+        };
+        serial.open(portName, options);
+        serial.clear();
+      } else {
+        // Otherwise, we close it!
+        serial.close();
+      }
 
-        // Both motors move forward
-        digitalWrite(in1, HIGH);
-        digitalWrite(in2, LOW);
-        digitalWrite(in3, HIGH);
-        digitalWrite(in4, LOW);
-        delay(2000);
-        
-        // Both motors move backward
-        digitalWrite(in1, LOW);
-        digitalWrite(in2, HIGH);
-        digitalWrite(in3, LOW);
-        digitalWrite(in4, HIGH);
-        delay(2000);
-        
-        // One motor moves forward, the other moves backward
-        digitalWrite(in1, HIGH);
-        digitalWrite(in2, LOW);
-        digitalWrite(in3, LOW);
-        digitalWrite(in4, HIGH);
-        delay(2000);
-
-        // First motor moves backward, second motor moves forward
-        digitalWrite(in1, LOW);
-        digitalWrite(in2, HIGH);
-        digitalWrite(in3, HIGH);
-        digitalWrite(in4, LOW);
-        delay(2000);
-
-        // Turn off motors
-        digitalWrite(in1, LOW);
-        digitalWrite(in2, LOW);
-        digitalWrite(in3, LOW);
-        digitalWrite(in4, LOW);
+      // this will check if connection is on and update the button
+      checkPort();
     }
+
+    function onLED(){
+      if(ledBtn.innerHTML=="Turn LED ON"){
+        serial.write(48); // ASCII  '0' = 48
+        ledBtn.innerHTML=="Turn LED OFF";
+      }else{
+        serial.write(49); // ASCII  '1' = 49
+        ledBtn.innerHTML=="Turn LED ON";
+      }
+    }
+
+    function gotList(thelist) {
+      if(thelist.length==0) return;
+      let text;
+      // theList is an array of their names
+      for (let i = 0; i < thelist.length; i++) {
+        // Display in the console
+        text = text + String(i) + " " + thelist[i] + "&lt;br&gt;"
+      }
+      document.getElementById("ports").innerHTML = text;
+    }
+
+    function setupSerial() {
+      document.getElementById("ports").innerHTML = "loading list...";
+      serial =  new p5.SerialPort();
+      document.getElementById("ports").innerHTML = "loading list---";
+      let portlist = serial.list();
+      document.getElementById("ports").innerHTML = "portlist.length="+String(portlist.length);
+      gotList(portlist);
+
+      // setup callback that gets triggered on data (X or Y prints)
+      serial.on('data',ReadInput);
+
+      let options = {
+        baudRate: BAUD_RATE
+      };
+      //serial.open(portName, options);
+      serial.open(portName);
+      serial.clear();
+
+      checkPort();
+    }
+
+    function setup() {
+      connectBtn = document.getElementById("button_SERIAL");
+      ledBtn = document.getElementById("button_LED");
+      text_x = document.getElementById("joystic_x");
+      text_y = document.getElementById("joystic_y");
+      document.getElementById("ports").innerHTML = "...&lt;br&gt;";
+
+      setupSerial(); // Run our serial setup function (below)
+    }
+
+    setup();
+
+
+//THIS IS THE CODE FOR ARDUINO
+
+const int joystickX_pin = A0; // Analog pin for X-axis of the joystick
+const int joystickY_pin = A1; // Analog pin for Y-axis of the joystick
+const int ledpin1 = 9;
+
+void setup() {
+  pinMode(joystickX_pin, INPUT);
+  pinMode(joystickY_pin, INPUT);
+  pinMode(ledpin1, OUTPUT);
+  Serial.begin(9600); // Start serial communication
+}
+
+
+void loop() {
+  // Read joystick values
+  int x_val = analogRead(joystickX_pin);
+  int y_val = analogRead(joystickY_pin);
+  int led_in; 
+
+  // Send joystick values over serial
+  Serial.print("X=");
+  Serial.println(x_val);
+  Serial.print("Y=");
+  Serial.println(y_val);
+
+  if (Serial.available() > 0) {
+    led_in = Serial.read();
+  }
+
+  if (led_in == '1' && digitalRead(ledpin1) == 0) {
+    digitalWrite(ledpin1, HIGH);
+  } else if(led_in == '0' && digitalRead(ledpin1) == 1) {
+    digitalWrite(ledpin1, LOW);
+  }
+
+  delay(100); // Adjust delay as needed
+}
+
+
+
+
+
   </pre>
 </div>
