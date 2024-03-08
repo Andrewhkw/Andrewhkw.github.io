@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Andrew Kwon's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Final Project: Secure Access!</h1>
+    <p>Here is all the documentation for the final project!</p>
+    <h1>Concept</h1>
+    <div class="header">
+      <img src="Concept Diagram.jpg" />
+      <div>
+        <img src="Concept Diagram 2.jpg" />
+      </div>
+      <p>The idea behind this was inspired by my car being broken into recently. 
+        While I understand that this may not be the best preventative measure that 
+        would stop an intruder from forcing entry into my car, I thought it would 
+        be sentimental to at least try. Furthermore, the user must use the right 
+        combination of inputs in order to achieve the desired output which I will 
+        discuss more in the schematic. </p>
+    </div>
+    <h1>Schematic</h1>
+    <div class="header">
+      <img src="FinalProjSchematic.jpg" />
+      <p>This is the schematic for the final project. 
+        I picked the value 220 for the resistor because I wanted to limit the current flowing to the LED.
+        The hardware wiring are pretty straightforward with digital logic connecting 
+        the pinpad and sonar as the inputs while the LCD acts as the output.</p>
+    </div>
+    <h1>Final Project Arduino Board Photo</h1>
+    <div class="header">
+      <img src="FinalProjectBoard.jpg" />
+      <p>This is Arduino Board setup I used to get the pinpad and the sonar as inputs 
+        for the LCD display output. The LCD display requires an input to be registered 
+        by the sonar which allows the user to then input things from the pinpad into the 
+        LCD display. The sonar and the pinpad cannot work without each other.
+      </p>
+    </div>
+    <h1>Video GIF</h1>
+    <div class="header">
+      <img src="FinalVid.gif" />
+      <p>This is a video GIF of the LCD displaying inputs from the keypad and the sonar sensor.
+        It shows the user attempting different password combinations until the right combo is achieved.
+      </p>
+    </div>
+    <h1>Code Snippet</h1>
+<div class="header">
+  <pre>
+    &lt;
+      #include <LiquidCrystal.h>
+      #include <Keypad.h>
+      
+      // connections for LCD
+      const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+      // create LCD class instance, init. connections
+      LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+      
+      // general configuration of KeyPad
+      const int ROW_NUM = 4; //four rows
+      const int COLUMN_NUM = 4; //three columns
+      char keys[ROW_NUM][COLUMN_NUM] = {
+        {'1','2','3','A'},
+        {'4','5','6','B'},
+        {'7','8','9','C'},
+        {'*','0','#','D'}
+      };
+      // KeyPad pin connections
+      byte pin_rows[ROW_NUM] = {A5,A4,A3,A2}; //connect to the row pinouts of the keypad
+      byte pin_column[COLUMN_NUM] = {6,7,8,13}; //connect to the column pinouts of the keypad 
+      // create KeyPad Class instance, init. connections
+      Keypad keypad = Keypad( makeKeymap(keys), pin_rows, pin_column, ROW_NUM, COLUMN_NUM );
+      
+      // Sonar connection pins
+      int pin_trig = 9;
+      int pin_echo = 10;
+      
+      // Sonar distance measurement function
+      // Returns: distance in meters (as floating point number)
+      double distance(){
+          // send a pulse:
+          // make sure it starts low initially
+          digitalWrite(pin_trig, LOW);
+          delayMicroseconds(2); // wait a bit
+          // start the pulse (high on pin)
+          digitalWrite(pin_trig, HIGH);
+          // duration of pulse
+          delayMicroseconds(10);
+          // end pulse (low in pin)
+          digitalWrite(pin_trig, LOW);    
+          
+          // wait of incomming signal (echo) on pin_echo
+          // (waits for high on pin)
+          unsigned long dt = pulseIn(pin_echo, HIGH);
+          
+          // conver time in microseconds to distance in meters
+          // d = v * t / 2, v - speed of sound in these units
+          // NOT: t is for travaling to the TARGET and back, hence "/2"
+          double res = (dt*0.0343)/2;
+          
+          return res;
+      }
+      
+      // initial setup
+      void setup() {
+          // enable output in TRIG-connected pin_column (Sonar)
+          pinMode(pin_trig, OUTPUT);    
+          
+          // start LCD
+          lcd.begin(16,2);
+      }
+      
+      // security box parameters:
+      // password
+      String password = "0123";
+      // and critical distance to turn on/of
+      double d0 = 50.0;
+      
+      // global variables
+      String pass;
+      boolean got_password = false;
+      
+      // main loop
+      void loop(){
+          
+       // measure distance with Sonar
+       double d = distance();
+       
+       // DEBUG INFO: show distance for callibration
+       //lcd.clear();
+       //lcd.setCursor(0,0);
+       //lcd.print("d="+String(d,2));    
+       //return;
+       
+       // test if we are withing critical distance
+       if(d < d0){ 
+          // check if password has been verified
+          if(got_password==false){// if not
+              // get KeyPad state
+              char key = keypad.getKey();//GetKey();
+              // if an alphanum. key -> add to password
+              if(key>='0' && key<='9' || key>='A' && key<='D') pass = pass + key;
+              // if '*' - clear password string
+              if(key=='*'){ 
+                  pass = "";
+                  //also clear LCD screen
+                  lcd.clear();        
+              }
+              // if '#' verify password accumulated this far
+              if(key=='#'){
+                  if(pass == password){// password is good
+                      // ste flag
+                      got_password = true;
+                      return;
+                  }else{// password is wrong
+                      // start anew - clea password
+                      pass = "";
+                      // display text on LCD
+                      lcd.setCursor(0,0);
+                      lcd.print("password is wrong");    
+                      lcd.setCursor(0,1);
+                      lcd.print("go away!");        
+                      // whait (for security and so user can read)
+                      delay(3000);
+                      // clear LCD
+                      lcd.clear();
+                      // reset flag
+                      got_password = false;
+                      return;
+                  }
+              }
+              // (go back to) initial LCD screen:
+              lcd.setCursor(0,0);
+              lcd.print("enter password:");    
+              lcd.setCursor(0,1);
+              lcd.print(pass);
+          }else{// password verified and correct
+              // print that in LCD
+              lcd.setCursor(0,0);
+              lcd.print("password is right!");    
+              lcd.setCursor(0,1);
+              lcd.print("come on in!");        
+              // keep it on display for 3 sec.
+              delay(3000);
+              // reset password
+              pass = "";
+              // reset flag
+              got_password = false;
+              // clear LCD
+              lcd.clear();
+              // to go back to inital screen ...
+          }
+       }else{// outside of critical distance
+          // reset password
+          pass = "";
+          // reset flag
+          got_password = false;
+          // clear LCD (before printing)
+          lcd.clear();
+          // display stand-by symbols
+          lcd.setCursor(0,0);
+          lcd.print("--");    
+          lcd.setCursor(0,1);
+          lcd.print("--");  
+       }    
+        
+       // delay the entire loop a bit to let
+       // Sonar reset to initial state.
+       delay(100);
+      }
+      
+
+
+
+
+  </pre>
+</div>
